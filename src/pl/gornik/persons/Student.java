@@ -1,29 +1,55 @@
 package pl.gornik.persons;
+
 import pl.gornik.exceptions.InvalidDataException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Student extends Person {
-    private String klasa;
-    private List<String> rozszerzenia;
-    private List<String> rodzice;
+    private String studentClass;
+    private List<String> advancedSubjects;
+    private List<String> parents;
 
-    public Student(String login, String haslo, String imie, String nazwisko, String pesel, String dataUrodzenia, String nrTelefonu, String adres,
-                 String klasa, List<String> rozszerzenia, List<String> rodzice) {
-        super(login, haslo, imie, nazwisko, pesel, dataUrodzenia, nrTelefonu, adres);
-        if (klasa == null || klasa.isEmpty()) {
+    public Student(String login, String password, String firstName, String lastName, String pesel, String birthDate, String phoneNumber, String address,
+                   String studentClass, List<String> advancedSubjects, List<String> parents) {
+        super(login, password, firstName, lastName, pesel, birthDate, phoneNumber, address);
+        if (studentClass == null || studentClass.isEmpty()) {
             throw new InvalidDataException("Klasa nie może być pusta.");
         }
-        this.klasa = klasa;
-        this.rozszerzenia = rozszerzenia != null ? rozszerzenia : new ArrayList<>();
-        this.rodzice = rodzice != null ? rodzice : new ArrayList<>();
+        this.studentClass = studentClass;
+        this.advancedSubjects = advancedSubjects != null ? advancedSubjects : new ArrayList<>();
+        this.parents = parents != null ? parents : new ArrayList<>();
     }
 
     @Override
-    public void wyswietlInformacje() {
-        super.wyswietlInformacje();
-        System.out.println("Klasa: " + klasa);
-        System.out.println("Rozszerzenia: " + String.join(", ", rozszerzenia));
-        System.out.println("Rodzice: " + String.join(", ", rodzice));
+    public void showInfo() {
+        super.showInfo();
+        System.out.println("Klasa: " + studentClass);
+        System.out.println("Rozszerzenia: " + String.join(", ", advancedSubjects));
+        System.out.println("Rodzice: " + String.join(", ", parents));
+    }
+
+
+    public String getStudentClass() {
+        return studentClass;
+    }
+
+    public void setStudentClass(String studentClass) {
+        this.studentClass = studentClass;
+    }
+
+    public List<String> getAdvancedSubjects() {
+        return advancedSubjects;
+    }
+
+    public void setAdvancedSubjects(List<String> advancedSubjects) {
+        this.advancedSubjects = advancedSubjects;
+    }
+
+    public List<String> getParents() {
+        return parents;
+    }
+
+    public void setParents(List<String> parents) {
+        this.parents = parents;
     }
 }

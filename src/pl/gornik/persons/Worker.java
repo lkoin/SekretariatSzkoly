@@ -3,26 +3,52 @@ package pl.gornik.persons;
 import pl.gornik.exceptions.InvalidDataException;
 
 public class Worker extends Person {
-    private String stanowisko;
-    private String przedmiotWykladany;
-    private boolean dostepDoPaneluZarzadzania;
+    private String position;
+    private String subjectTaught;
+    private boolean hasManagementAccess;
 
-    public Worker(String login, String haslo, String imie, String nazwisko, String pesel, String dataUrodzenia, String nrTelefonu, String adres,
-                     String stanowisko, String przedmiotWykladany, boolean dostepDoPaneluZarzadzania) {
-        super(login, haslo, imie, nazwisko, pesel, dataUrodzenia, nrTelefonu, adres);
-        if (stanowisko == null || stanowisko.isEmpty()) {
-            throw new InvalidDataException("Stanowisko nie może być puste.");
+    public Worker(String login, String password, String firstName, String lastName, String pesel, String birthDate, String phoneNumber, String address,
+                  String position, String subjectTaught, boolean hasManagementAccess) {
+        super(login, password, firstName, lastName, pesel, birthDate, phoneNumber, address);
+        if (position == null || position.isEmpty()) {
+            throw new InvalidDataException("Stanowisko nie moze byc puste");
         }
-        this.stanowisko = stanowisko;
-        this.przedmiotWykladany = przedmiotWykladany;
-        this.dostepDoPaneluZarzadzania = dostepDoPaneluZarzadzania;
+        this.position = position;
+        this.subjectTaught = subjectTaught;
+        this.hasManagementAccess = hasManagementAccess;
     }
 
     @Override
-    public void wyswietlInformacje() {
-        super.wyswietlInformacje();
-        System.out.println("Stanowisko: " + stanowisko);
-        System.out.println("Przedmiot wykładany: " + przedmiotWykladany);
-        System.out.println("Dostęp do panelu zarządzania: " + (dostepDoPaneluZarzadzania ? "Tak" : "Nie"));
+    public void showInfo() {
+        super.showInfo();
+        System.out.println("Stanowisko: " + position);
+        System.out.println("Przedmiot wykladany: " + subjectTaught);
+        System.out.println("Dostep do panelu zarządzania: " + (hasManagementAccess ? "Tak" : "Nie"));
     }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    public String getSubjectTaught() {
+        return subjectTaught;
+    }
+
+    public void setSubjectTaught(String subjectTaught) {
+        this.subjectTaught = subjectTaught;
+    }
+
+    public boolean isHasManagementAccess() {
+        return hasManagementAccess;
+    }
+
+    public void setHasManagementAccess(boolean hasManagementAccess) {
+        this.hasManagementAccess = hasManagementAccess;
+    }
+
+
 }
