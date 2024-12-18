@@ -25,7 +25,7 @@ public class ViewController {
             System.out.print("Wybierz opcję: ");
 
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Konsumpcja znaku nowej linii
+            scanner.nextLine();
 
             switch (choice) {
                 case 1 -> login(scanner);
