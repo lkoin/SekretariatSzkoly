@@ -1,11 +1,12 @@
 package pl.gornik.controller;
+import pl.gornik.exceptions.AddingToSchoolClassException;
 import pl.gornik.exceptions.InvalidDataException;
 import pl.gornik.persons.*;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Scanner;
+
+import java.util.*;
 
 public class ViewController {
+    private List<Student> students;
     private List<Person> persons;
     private List<SchoolClass> schoolClasses;
 
@@ -23,18 +24,24 @@ public class ViewController {
             System.out.println("1. Zaloguj się");
             System.out.println("2. Wyjście");
             System.out.print("Wybierz opcję: ");
-
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Konsumpcja znaku nowej linii
+            int choice = 0;
+            try {
+                choice = scanner.nextInt();
+            } catch (InputMismatchException e) {
+                System.err.println(e.getMessage());
+            }
+            scanner.nextLine();
 
             switch (choice) {
-                case 1 -> login(scanner);
-                case 2 -> {
-                    System.out.println("Do widzenia!");
-                    return;
+
+                    case 1 -> login(scanner);
+                    case 2 -> {
+                        System.out.println("Do widzenia!");
+                        return;
+                    }
+                    default -> System.out.println("Nieprawidłowy wybór. Spróbuj ponownie.");
                 }
-                default -> System.out.println("Nieprawidłowy wybór. Spróbuj ponownie.");
-            }
+
         }
     }
 
@@ -70,8 +77,13 @@ public class ViewController {
             System.out.println("6. Wyloguj się");
             System.out.print("Wybierz opcję: ");
 
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Konsumpcja znaku nowej linii
+            int choice = 0;
+            try {
+                choice = scanner.nextInt();
+            } catch (InputMismatchException e) {
+                System.out.println("Nieprawidłowy wybór. Spróbuj ponownie.");
+            }
+            scanner.nextLine();
 
             switch (choice) {
                 case 1 -> displayAllPersons(scanner);
@@ -102,7 +114,12 @@ public class ViewController {
         System.out.println("4. Pracownicy przypisani do danej klasy");
         System.out.print("Wybierz opcję: ");
 
-        int choice = scanner.nextInt();
+        int choice = 0;
+        try {
+            choice = scanner.nextInt();
+        } catch (InputMismatchException e) {
+            System.out.println("Nieprawidłowy wybór. Spróbuj ponownie.");
+        }
         scanner.nextLine();
 
         switch (choice) {
@@ -122,7 +139,7 @@ public class ViewController {
                 System.out.print("Podaj nazwę klasy: ");
                 String className = scanner.nextLine();
                 SchoolClass targetClass = schoolClasses.stream()
-                        .filter(schoolClass -> schoolClass.getClassName().equalsIgnoreCase(className))
+                        .filter(schoolClass -> schoolClass.getName().equalsIgnoreCase(className))
                         .findFirst()
                         .orElse(null);
 
@@ -137,7 +154,7 @@ public class ViewController {
                 System.out.print("Podaj nazwę klasy: ");
                 String className = scanner.nextLine();
                 SchoolClass targetClass = schoolClasses.stream()
-                        .filter(schoolClass -> schoolClass.getClassName().equalsIgnoreCase(className))
+                        .filter(schoolClass -> schoolClass.getName().equalsIgnoreCase(className))
                         .findFirst()
                         .orElse(null);
 
@@ -148,7 +165,7 @@ public class ViewController {
                     targetClass.getTeachers().forEach(Worker::showInfo);
                 }
             }
-            default -> System.out.println("Nieprawidłowy wybór. Spróbuj ponownie.");
+
         }
     }
 
@@ -187,7 +204,7 @@ public class ViewController {
                 System.out.println("Dodano nauczyciela.");
             } else if (type.equals("U")) {
                 System.out.print("Podaj klasę: ");
-                String studentClass = scanner.nextLine();
+                SchoolClass studentClass = new SchoolClass(scanner.nextLine());
                 System.out.println("Podaj rozszerzenia (wpisz po przecinku): ");
                 String[] subjects = scanner.nextLine().split(",");
                 List<String> advancedSubjects = List.of(subjects);
@@ -204,44 +221,34 @@ public class ViewController {
         }
     }
 
-    private void assignStudentToClass(Scanner scanner) {
-        try {
-            System.out.println("\nPrzypisywanie ucznia do klasy:");
-            System.out.print("Podaj PESEL ucznia: ");
-            String pesel = scanner.nextLine();
+    public void assignStudentToClass(Scanner scanner) {
+        System.out.println("Przypisywanie ucznia do klasy:");
+        System.out.print("Podaj PESEL ucznia: ");
+        String pesel = scanner.nextLine();
 
-            Student student = (Student) persons.stream()
-                    .filter(person -> person instanceof Student && person.getPesel().equals(pesel))
-                    .findFirst()
-                    .orElse(null);
-
-            if (student == null) {
-                System.out.println("Nie znaleziono ucznia z podanym PESEL-em.");
-                return;
-            }
-
+        Student student = findStudentByPesel(pesel);
+        if (student != null) {
             System.out.println("Dostępne klasy:");
-            schoolClasses.forEach(schoolClass ->
-                    System.out.println("Klasa: " + schoolClass.getClassName())
-            );
-
+            for (SchoolClass schoolClass : schoolClasses) {
+                System.out.println("Klasa: " + schoolClass.getName());
+            }
 
             System.out.print("Wprowadź nazwę klasy: ");
-            String className = scanner.nextLine();
+            String className = scanner.nextLine().trim().toUpperCase();
+            SchoolClass selectedClass = findClassByName(className);
 
-            SchoolClass targetClass = schoolClasses.stream()
-                    .filter(schoolClass -> schoolClass.getClassName().equalsIgnoreCase(className))
-                    .findFirst()
-                    .orElse(null);
-
-            if (targetClass == null) {
-                System.out.println("Nie znaleziono klasy o podanej nazwie.");
+            if (selectedClass != null) {
+                try {
+                    selectedClass.addStudent(student);
+                    System.out.println("Uczeń został przypisany do klasy " + selectedClass.getName() + ".");
+                } catch (AddingToSchoolClassException e) {
+                    System.err.println("Błąd: " + e.getMessage());
+                }
             } else {
-                targetClass.getStudents().add(student);
-                System.out.println("Uczeń został przypisany do klasy " + className + ".");
+                System.out.println("Nie znaleziono klasy o nazwie: " + className);
             }
-        } catch (Exception e) {
-            System.out.println("Błąd: " + e.getMessage());
+        } else {
+            System.out.println("Nie znaleziono ucznia o podanym PESEL.");
         }
     }
 
@@ -252,7 +259,12 @@ public class ViewController {
         System.out.println("2. Sortuj osoby alfabetycznie (Z-A)");
         System.out.print("Wybierz opcję: ");
 
-        int choice = scanner.nextInt();
+        int choice = 0;
+        try {
+            choice = scanner.nextInt();
+        } catch (InputMismatchException e) {
+            System.out.println("Nieprawidłowy wybór. Spróbuj ponownie.");
+        }
         scanner.nextLine();
 
         if (choice == 1) {
@@ -277,4 +289,22 @@ public class ViewController {
     }
 
 
+
+    private Student findStudentByPesel(String pesel) {
+        for (Student student : students) {
+            if (student.getPesel().equals(pesel)) {
+                return student;
+            }
+        }
+        return null;
+    }
+
+    private SchoolClass findClassByName(String className) {
+        for (SchoolClass schoolClass : schoolClasses) {
+            if (schoolClass.getName().equalsIgnoreCase(className)) {
+                return schoolClass;
+            }
+        }
+        return null;
+    }
 }

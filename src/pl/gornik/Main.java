@@ -2,7 +2,7 @@ package pl.gornik;
 
 import pl.gornik.controller.ViewController;
 import pl.gornik.exceptions.InvalidDataException;
-import pl.gornik.exceptions.PersonIsAlreadyDefinedToClassException;
+import pl.gornik.exceptions.AddingToSchoolClassException;
 import pl.gornik.persons.*;
 
 import java.util.ArrayList;
@@ -15,18 +15,43 @@ public class Main {
         List<SchoolClass> schoolClasses = new ArrayList<>();
 
 
+        SchoolClass class1A = new SchoolClass("1A");
+        SchoolClass class1B = new SchoolClass("1B");
+        SchoolClass class1C = new SchoolClass("1C");
+        SchoolClass class2A = new SchoolClass("2A");
+        SchoolClass class2B = new SchoolClass("2B");
+        SchoolClass class2C = new SchoolClass("2C");
+        SchoolClass class3A = new SchoolClass("3A");
+        SchoolClass class3B = new SchoolClass("3B");
+        SchoolClass class3C = new SchoolClass("3C");
+        SchoolClass class3D = new SchoolClass("3D");
+        SchoolClass class4A = new SchoolClass("4A");
+        SchoolClass class4B = new SchoolClass("4B");
+        SchoolClass class4C = new SchoolClass("4C");
+        SchoolClass class5A = new SchoolClass("5A");
+        SchoolClass class5B = new SchoolClass("5B");
+        SchoolClass class5C = new SchoolClass("5C");
+        schoolClasses.add(class1A);
+        schoolClasses.add(class1B);
+        schoolClasses.add(class1C);
+        schoolClasses.add(class2A);
+        schoolClasses.add(class2C);
+        schoolClasses.add(class3A);
+        schoolClasses.add(class3B);
+        schoolClasses.add(class3C);
+        schoolClasses.add(class3D);
+        schoolClasses.add(class4A);
+        schoolClasses.add(class4B);
+        schoolClasses.add(class4C);
+        schoolClasses.add(class5A);
+        schoolClasses.add(class5B);
+        schoolClasses.add(class5C);
+
         try {
             Worker teacher1 = new Worker("teacher1", "password123", "Jan", "Kowalski", "12345678901", "1985-05-20", "123-456-789", "ul. Przykładowa 1", "Nauczyciel", "Matematyka", true);
             persons.add(teacher1);
         } catch (InvalidDataException e) {
             System.err.println("Błąd danych przy dodawaniu nauczyciela 1: " + e.getMessage());
-        }
-
-        try {
-            Worker teacher2 = new Worker("teacher2", "password456", "Anna", "Nowak", "98765432101", "1990-06-15", "987-654-321", "ul. Przykładowa 2", "Nauczyciel", "Fizyka", false);
-            persons.add(teacher2);
-        } catch (InvalidDataException e) {
-            System.err.println("Błąd danych przy dodawaniu nauczyciela 2: " + e.getMessage());
         }
 
 
@@ -37,56 +62,11 @@ public class Main {
             List<String> rodzice1 = new ArrayList<>();
             rodzice1.add("Marek Kowalski");
             rodzice1.add("Elżbieta Kowalska");
-            Student student1 = new Student("student1", "studentpass1", "Piotr", "Kowalski", "11223344556", "2006-08-30", "555-666-777", "ul. Przykładowa 3", "1A", rozszerzenia1, rodzice1);
+            Student student1 = new Student("student1", "studentpass1", "Piotr", "Kowalski", "11223344556", "2006-08-30", "555-666-777", "ul. Przykładowa 3", class1A, rozszerzenia1, rodzice1);
             persons.add(student1);
-        } catch (InvalidDataException e) {
+            class1A.addStudent(student1);
+        } catch (InvalidDataException | AddingToSchoolClassException e) {
             System.err.println("Błąd danych przy dodawaniu ucznia 1: " + e.getMessage());
-        }
-
-        try {
-            List<String> rozszerzenia2 = new ArrayList<>();
-            rozszerzenia2.add("Biologia");
-            rozszerzenia2.add("Chemia");
-            List<String> rodzice2 = new ArrayList<>();
-            rodzice2.add("Jan Nowak");
-            rodzice2.add("Maria Nowak");
-            Student student2 = new Student("student2", "studentpass2", "Katarzyna", "Nowak", "22334455667", "2006-09-14", "888-999-000", "ul. Przykładowa 4", "2B", rozszerzenia2, rodzice2);
-            persons.add(student2);
-        } catch (InvalidDataException e) {
-            System.err.println("Błąd danych przy dodawaniu ucznia 2: " + e.getMessage());
-        }
-
-
-        //----------------------------------------------------------------------------
-        // Naprawa Błedow z przypisywaniem do klasy i z wyswietlaniem ucznia po klasie
-        //----------------------------------------------------------------------------
-
-        try {
-            List<Student> students1A = new ArrayList<>();
-            List<Worker> teachers1A = new ArrayList<>();
-            SchoolClass class1A = new SchoolClass("1A",  students1A, teachers1A);
-            schoolClasses.add(class1A);
-
-
-            for (Person person : persons) {
-                if (person instanceof Student) {
-                    Student student = (Student) person;
-                    if ("1A".equals(student.getStudentClass())) {
-                        class1A.addStudent(student);
-                    }
-                }
-            }
-
-
-            for (Person person : persons) {
-                if (person instanceof Worker) {
-                    Worker teacher = (Worker) person;
-                    class1A.addTeacher(teacher);
-                }
-            }
-
-        } catch (PersonIsAlreadyDefinedToClassException e) {
-            System.err.println("Błąd przy przypisywaniu osób do klasy: " + e.getMessage());
         }
 
 

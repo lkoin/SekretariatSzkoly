@@ -1,66 +1,56 @@
 package pl.gornik.persons;
 
-import pl.gornik.exceptions.PersonIsAlreadyDefinedToClassException;
-import pl.gornik.exceptions.InvalidDataException;
-
-import java.util.ArrayList;
+import pl.gornik.exceptions.AddingToSchoolClassException;
 import java.util.List;
+import java.util.ArrayList;
 
 public class SchoolClass {
-    private String className; // Zmieniono z classNumber na className
+    private String name;
 
     private List<Student> students;
     private List<Worker> teachers;
 
-    public SchoolClass(String className, List<Student> students, List<Worker> teachers) {
-        if (className == null || className.isEmpty()) {
-            throw new InvalidDataException("Nazwa klasy nie może być pusta.");
+    public SchoolClass(String name) {
+        this.name = name.toUpperCase();  // Przechowywanie nazw klas w formie z dużymi literami
+
+        this.students = new ArrayList<>();
+        this.teachers = new ArrayList<>();
+    }
+
+    public void addStudent(Student student) throws AddingToSchoolClassException {
+        if (student == null) {
+            throw new AddingToSchoolClassException("Student nie może być null");
         }
-        this.className = className;
-
-        this.students = students != null ? students : new ArrayList<>();
-        this.teachers = teachers != null ? teachers : new ArrayList<>();
+        if (!students.contains(student)) {
+            students.add(student);
+            student.setSchoolClass(this);  // Powiązanie ucznia z klasą
+        } else {
+            throw new AddingToSchoolClassException("Uczeń już jest przypisany do tej klasy");
+        }
     }
 
-
-
-    public String getClassName() {
-        return className;
+    public void addTeacher(Worker teacher) throws AddingToSchoolClassException {
+        if (teacher == null) {
+            throw new AddingToSchoolClassException("Nauczyciel nie może być null");
+        }
+        if (!teachers.contains(teacher)) {
+            teachers.add(teacher);
+        } else {
+            throw new AddingToSchoolClassException("Nauczyciel już jest przypisany do tej klasy");
+        }
     }
 
-    public void setClassName(String className) {
-        this.className = className;
+    public String getName() {
+        return name;
     }
+
 
 
     public List<Student> getStudents() {
         return students;
     }
 
-    public void setStudents(List<Student> students) {
-        this.students = students;
-    }
-
     public List<Worker> getTeachers() {
         return teachers;
     }
-
-    public void setTeachers(List<Worker> teachers) {
-        this.teachers = teachers;
-    }
-
-    public void addStudent(Student student) throws PersonIsAlreadyDefinedToClassException {
-        if (students.contains(student)) {
-            throw new PersonIsAlreadyDefinedToClassException("Uczeń " + student.getName() + " " + student.getSurname() + " jest już przypisany do tej klasy.");
-        }
-        students.add(student);
-    }
-
-    public void addTeacher(Worker teacher) throws PersonIsAlreadyDefinedToClassException {
-        if (teachers.contains(teacher)) {
-            throw new PersonIsAlreadyDefinedToClassException("Nauczyciel " + teacher.getName() + " " + teacher.getSurname() + " jest już przypisany do tej klasy.");
-        }
-        teachers.add(teacher);
-    }
-
 }
