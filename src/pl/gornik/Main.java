@@ -1,6 +1,8 @@
 package pl.gornik;
+
 import pl.gornik.controller.ViewController;
 import pl.gornik.exceptions.InvalidDataException;
+import pl.gornik.exceptions.PersonIsAlreadyDefinedToClassException;
 import pl.gornik.persons.*;
 
 import java.util.ArrayList;
@@ -8,10 +10,11 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        // Lista osób w systemie
-        List<Person> persons = new ArrayList<>();
 
-        // Dodawanie nauczycieli
+        List<Person> persons = new ArrayList<>();
+        List<SchoolClass> schoolClasses = new ArrayList<>();
+
+
         try {
             Worker teacher1 = new Worker("teacher1", "password123", "Jan", "Kowalski", "12345678901", "1985-05-20", "123-456-789", "ul. Przykładowa 1", "Nauczyciel", "Matematyka", true);
             persons.add(teacher1);
@@ -26,7 +29,7 @@ public class Main {
             System.err.println("Błąd danych przy dodawaniu nauczyciela 2: " + e.getMessage());
         }
 
-        // Dodawanie uczniów
+
         try {
             List<String> rozszerzenia1 = new ArrayList<>();
             rozszerzenia1.add("Matematyka");
@@ -53,20 +56,41 @@ public class Main {
             System.err.println("Błąd danych przy dodawaniu ucznia 2: " + e.getMessage());
         }
 
-        // Dodawanie absolwenta
+
+        //----------------------------------------------------------------------------
+        // Naprawa Błedow z przypisywaniem do klasy i z wyswietlaniem ucznia po klasie
+        //----------------------------------------------------------------------------
+
         try {
-            Graduate graduate = new Graduate("graduate1", "gradpass", "Michał", "Zalewski", "33445566778", "2005-07-18", "444-555-666", "ul. Przykładowa 5");
-            persons.add(graduate);
-        } catch (InvalidDataException e) {
-            System.err.println("Błąd danych przy dodawaniu absolwenta: " + e.getMessage());
+            List<Student> students1A = new ArrayList<>();
+            List<Worker> teachers1A = new ArrayList<>();
+            SchoolClass class1A = new SchoolClass("1A",  students1A, teachers1A);
+            schoolClasses.add(class1A);
+
+
+            for (Person person : persons) {
+                if (person instanceof Student) {
+                    Student student = (Student) person;
+                    if ("1A".equals(student.getStudentClass())) {
+                        class1A.addStudent(student);
+                    }
+                }
+            }
+
+
+            for (Person person : persons) {
+                if (person instanceof Worker) {
+                    Worker teacher = (Worker) person;
+                    class1A.addTeacher(teacher);
+                }
+            }
+
+        } catch (PersonIsAlreadyDefinedToClassException e) {
+            System.err.println("Błąd przy przypisywaniu osób do klasy: " + e.getMessage());
         }
 
 
-        //dodawanie istniejacych uczniow do klasy
-        List<SchoolClass> schoolClasses = new ArrayList<>();
-
         ViewController viewController = new ViewController(persons, schoolClasses);
-
         viewController.displayLoginMenu();
     }
 }

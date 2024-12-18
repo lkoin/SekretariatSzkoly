@@ -1,44 +1,37 @@
 package pl.gornik.persons;
 
+import pl.gornik.exceptions.PersonIsAlreadyDefinedToClassException;
+import pl.gornik.exceptions.InvalidDataException;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class SchoolClass {
-    private String profile;
-    private int classNumber;
+    private String className; // Zmieniono z classNumber na className
+
     private List<Student> students;
     private List<Worker> teachers;
 
-    public SchoolClass(String profile, int classNumber, List<Student> students, List<Worker> teachers) {
-        this.profile = profile;
-        this.classNumber = classNumber;
-        this.students = students;
-        this.teachers = teachers;
+    public SchoolClass(String className, List<Student> students, List<Worker> teachers) {
+        if (className == null || className.isEmpty()) {
+            throw new InvalidDataException("Nazwa klasy nie może być pusta.");
+        }
+        this.className = className;
+
+        this.students = students != null ? students : new ArrayList<>();
+        this.teachers = teachers != null ? teachers : new ArrayList<>();
     }
 
-    public void displayInformation() {
-        System.out.println("Profil: " + profile);
-        System.out.println("Numer klasy: " + classNumber);
-        System.out.println("Uczniowie: ");
-        students.forEach(Student::showInfo);
-        System.out.println("Nauczyciele: ");
-        teachers.forEach(Worker::showInfo);
+
+
+    public String getClassName() {
+        return className;
     }
 
-    public String getProfile() {
-        return profile;
+    public void setClassName(String className) {
+        this.className = className;
     }
 
-    public void setProfile(String profile) {
-        this.profile = profile;
-    }
-
-    public int getClassNumber() {
-        return classNumber;
-    }
-
-    public void setClassNumber(int classNumber) {
-        this.classNumber = classNumber;
-    }
 
     public List<Student> getStudents() {
         return students;
@@ -55,4 +48,19 @@ public class SchoolClass {
     public void setTeachers(List<Worker> teachers) {
         this.teachers = teachers;
     }
+
+    public void addStudent(Student student) throws PersonIsAlreadyDefinedToClassException {
+        if (students.contains(student)) {
+            throw new PersonIsAlreadyDefinedToClassException("Uczeń " + student.getName() + " " + student.getSurname() + " jest już przypisany do tej klasy.");
+        }
+        students.add(student);
+    }
+
+    public void addTeacher(Worker teacher) throws PersonIsAlreadyDefinedToClassException {
+        if (teachers.contains(teacher)) {
+            throw new PersonIsAlreadyDefinedToClassException("Nauczyciel " + teacher.getName() + " " + teacher.getSurname() + " jest już przypisany do tej klasy.");
+        }
+        teachers.add(teacher);
+    }
+
 }
