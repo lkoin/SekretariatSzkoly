@@ -15,7 +15,7 @@ public class Student extends Person {
         if (schoolClass == null) {
             throw new InvalidDataException("Klasa nie może być pusta.");
         }
-        this.schoolClass = schoolClass;  // Powiązanie z obiektem klasy
+        this.schoolClass = schoolClass;
         this.advancedSubjects = advancedSubjects != null ? advancedSubjects : new ArrayList<>();
         this.parents = parents != null ? parents : new ArrayList<>();
     }
@@ -23,7 +23,7 @@ public class Student extends Person {
     @Override
     public void showInfo() {
         super.showInfo();
-        System.out.println("Klasa: " + schoolClass.getName());  // Wyświetlamy nazwę klasy
+        System.out.println("Klasa: " + schoolClass.getName());
         System.out.println("Rozszerzenia: " + String.join(", ", advancedSubjects));
         System.out.println("Rodzice: " + String.join(", ", parents));
     }

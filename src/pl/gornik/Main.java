@@ -35,6 +35,7 @@ public class Main {
         schoolClasses.add(class1B);
         schoolClasses.add(class1C);
         schoolClasses.add(class2A);
+        schoolClasses.add(class2B);
         schoolClasses.add(class2C);
         schoolClasses.add(class3A);
         schoolClasses.add(class3B);

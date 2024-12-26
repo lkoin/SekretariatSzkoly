@@ -6,15 +6,14 @@ import pl.gornik.persons.*;
 import java.util.*;
 
 public class ViewController {
-    private List<Student> students;
-    private List<Person> persons;
-    private List<SchoolClass> schoolClasses;
 
-    public ViewController(List<Person> persons, List<SchoolClass> schoolClasses) {
-        this.persons = persons;
-        this.schoolClasses = schoolClasses;
-    }
+        private List<Person> persons;
+        private List<SchoolClass> schoolClasses;
 
+        public ViewController(List<Person> persons, List<SchoolClass> schoolClasses) {
+            this.persons = persons;
+            this.schoolClasses = schoolClasses;
+        }
     public void displayLoginMenu() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Witaj w systemie zarządzania szkołą!");
@@ -136,20 +135,25 @@ public class ViewController {
                         .forEach(Person::showInfo);
             }
             case 3 -> {
-                System.out.print("Podaj nazwę klasy: ");
-                String className = scanner.nextLine();
-                SchoolClass targetClass = schoolClasses.stream()
-                        .filter(schoolClass -> schoolClass.getName().equalsIgnoreCase(className))
-                        .findFirst()
-                        .orElse(null);
+                    System.out.print("Podaj nazwę klasy: ");
+                    String className = scanner.nextLine();
+                    SchoolClass targetClass = schoolClasses.stream()
+                            .filter(schoolClass -> schoolClass.getName().equalsIgnoreCase(className))
+                            .findFirst()
+                            .orElse(null);
 
-                if (targetClass == null) {
-                    System.out.println("Nie znaleziono klasy o podanej nazwie.");
-                } else {
-                    System.out.println("\nLista uczniów w klasie " + className + ":");
-                    targetClass.getStudents().forEach(Student::showInfo);
+                    if (targetClass == null) {
+                        System.out.println("Nie znaleziono klasy o podanej nazwie.");
+                    } else {
+                        System.out.println("\nLista uczniów w klasie " + className + ":");
+                        if (targetClass.getStudents() != null && !targetClass.getStudents().isEmpty()) {
+                            targetClass.getStudents().forEach(Student::showInfo);  // Zakładając, że Student ma metodę showInfo
+                        } else {
+                            System.out.println("Brak uczniów w tej klasie.");
+                        }
+                    }
                 }
-            }
+
             case 4 -> {
                 System.out.print("Podaj nazwę klasy: ");
                 String className = scanner.nextLine();
@@ -204,21 +208,36 @@ public class ViewController {
                 System.out.println("Dodano nauczyciela.");
             } else if (type.equals("U")) {
                 System.out.print("Podaj klasę: ");
-                SchoolClass studentClass = new SchoolClass(scanner.nextLine());
+                String className = scanner.nextLine();
+                SchoolClass studentClass = findClassByName(className);
+
+                if (studentClass == null) {
+                    System.out.println("Nie znaleziono klasy o podanej nazwie. Tworzę nową klasę.");
+                    studentClass = new SchoolClass(className);
+                    schoolClasses.add(studentClass);
+                }
                 System.out.println("Podaj rozszerzenia (wpisz po przecinku): ");
                 String[] subjects = scanner.nextLine().split(",");
                 List<String> advancedSubjects = List.of(subjects);
+
                 System.out.println("Podaj rodziców (wpisz po przecinku): ");
                 String[] parentsArray = scanner.nextLine().split(",");
                 List<String> parents = List.of(parentsArray);
-                persons.add(new Student(login, password, firstName, lastName, pesel, birthDate, phoneNumber, address, studentClass, advancedSubjects, parents));
-                System.out.println("Dodano ucznia.");
-            } else {
-                System.out.println("Nieprawidłowy typ.");
+
+                Student newStudent = new Student(login, password, firstName, lastName, pesel,
+                        birthDate, phoneNumber, address, studentClass, advancedSubjects, parents);
+
+                persons.add(newStudent);
+                try {
+                    studentClass.addStudent(newStudent);
+                    System.out.println("Dodano ucznia i przypisano do klasy " + className);
+                } catch (AddingToSchoolClassException e) {
+                    System.err.println("Błąd podczas przypisywania do klasy: " + e.getMessage());
+                }
             }
-        } catch (InvalidDataException e) {
+             } catch (InvalidDataException e) {
             System.out.println("Błąd: " + e.getMessage());
-        }
+            }
     }
 
     public void assignStudentToClass(Scanner scanner) {
@@ -251,6 +270,24 @@ public class ViewController {
             System.out.println("Nie znaleziono ucznia o podanym PESEL.");
         }
     }
+
+    public void assignStudentToClass(String pesel, String className) {
+        Student student = findStudentByPesel(pesel);
+        if (student != null) {
+            SchoolClass selectedClass = findClassByName(className.toUpperCase());
+
+            if (selectedClass != null) {
+                try {
+                    selectedClass.addStudent(student);
+                } catch (AddingToSchoolClassException e) {
+                    System.err.println(e.getMessage());
+                }
+            }
+        }
+    }
+
+
+
 
 
     private void sortLists(Scanner scanner) {
@@ -291,12 +328,12 @@ public class ViewController {
 
 
     private Student findStudentByPesel(String pesel) {
-        for (Student student : students) {
-            if (student.getPesel().equals(pesel)) {
-                return student;
-            }
-        }
-        return null;
+        return persons.stream()
+                .filter(person -> person instanceof Student)
+                .map(person -> (Student) person)
+                .filter(student -> student.getPesel().equals(pesel))
+                .findFirst()
+                .orElse(null);
     }
 
     private SchoolClass findClassByName(String className) {
@@ -308,3 +345,4 @@ public class ViewController {
         return null;
     }
 }
+
