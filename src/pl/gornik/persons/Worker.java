@@ -2,6 +2,8 @@ package pl.gornik.persons;
 
 import pl.gornik.exceptions.InvalidDataException;
 
+import java.sql.SQLOutput;
+
 public class Worker extends Person {
     private String position;
     private String subjectTaught;
@@ -24,6 +26,7 @@ public class Worker extends Person {
         System.out.println("Stanowisko: " + position);
         System.out.println("Przedmiot wykladany: " + subjectTaught);
         System.out.println("Dostep do panelu zarządzania: " + (hasManagementAccess ? "Tak" : "Nie"));
+        System.out.println("---------------------------");
     }
 
     public String getPosition() {

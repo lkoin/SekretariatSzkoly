@@ -3,17 +3,20 @@ import pl.gornik.exceptions.AddingToSchoolClassException;
 import pl.gornik.exceptions.InvalidDataException;
 import pl.gornik.persons.*;
 
+import java.sql.SQLOutput;
 import java.util.*;
 
 public class ViewController {
 
         private List<Person> persons;
         private List<SchoolClass> schoolClasses;
+        private List<Graduate> graduates;
 
-        public ViewController(List<Person> persons, List<SchoolClass> schoolClasses) {
-            this.persons = persons;
-            this.schoolClasses = schoolClasses;
-        }
+    public ViewController(List<Person> persons, List<SchoolClass> schoolClasses, List<Graduate> graduates) {
+        this.persons = persons;
+        this.schoolClasses = schoolClasses;
+        this.graduates = graduates;
+    }
     public void displayLoginMenu() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Witaj w systemie zarządzania szkołą!");
@@ -111,6 +114,7 @@ public class ViewController {
         System.out.println("2. Wszyscy uczniowie");
         System.out.println("3. Uczniowie przypisani do danej klasy");
         System.out.println("4. Pracownicy przypisani do danej klasy");
+        System.out.println("5. Wyswietl liste absolwentow szkoły");
         System.out.print("Wybierz opcję: ");
 
         int choice = 0;
@@ -147,7 +151,7 @@ public class ViewController {
                     } else {
                         System.out.println("\nLista uczniów w klasie " + className + ":");
                         if (targetClass.getStudents() != null && !targetClass.getStudents().isEmpty()) {
-                            targetClass.getStudents().forEach(Student::showInfo);  // Zakładając, że Student ma metodę showInfo
+                            targetClass.getStudents().forEach(Student::showInfo);
                         } else {
                             System.out.println("Brak uczniów w tej klasie.");
                         }
@@ -167,6 +171,14 @@ public class ViewController {
                 } else {
                     System.out.println("\nLista pracowników przypisanych do klasy " + className + ":");
                     targetClass.getTeachers().forEach(Worker::showInfo);
+                }
+            }
+            case 5 -> {
+                System.out.println("\nLista wszystkich absolwentów:");
+                if (graduates != null && !graduates.isEmpty()) {
+                    graduates.forEach(Graduate::showInfo);
+                } else {
+                    System.out.println("Brak absolwentów w bazie danych.");
                 }
             }
 
@@ -270,25 +282,6 @@ public class ViewController {
             System.out.println("Nie znaleziono ucznia o podanym PESEL.");
         }
     }
-
-    public void assignStudentToClass(String pesel, String className) {
-        Student student = findStudentByPesel(pesel);
-        if (student != null) {
-            SchoolClass selectedClass = findClassByName(className.toUpperCase());
-
-            if (selectedClass != null) {
-                try {
-                    selectedClass.addStudent(student);
-                } catch (AddingToSchoolClassException e) {
-                    System.err.println(e.getMessage());
-                }
-            }
-        }
-    }
-
-
-
-
 
     private void sortLists(Scanner scanner) {
         System.out.println("\nSortowanie list:");

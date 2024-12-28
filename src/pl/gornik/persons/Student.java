@@ -26,6 +26,7 @@ public class Student extends Person {
         System.out.println("Klasa: " + schoolClass.getName());
         System.out.println("Rozszerzenia: " + String.join(", ", advancedSubjects));
         System.out.println("Rodzice: " + String.join(", ", parents));
+        System.out.println("---------------------------");
     }
 
     public SchoolClass getSchoolClass() {
