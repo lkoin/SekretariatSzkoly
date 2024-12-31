@@ -4,13 +4,13 @@ A Java-based school management system that handles students, teachers, and gradu
 
 ## 🎯 Features
 
-| Feature | Description |
-|---------|-------------|
-| 🔐 Authentication | Secure login system with role-based access |
-| 👥 User Management | Handle students, teachers, and graduates |
-| 📚 Class Management | Organize and manage school classes |
-| 🔍 Advanced Search | Find users by various criteria |
-| 📊 Data Organization | Sort and manage data efficiently |
+| Feature              | Description                                |
+|----------------------|--------------------------------------------|
+| 🔐 Authentication    | Secure login system with role-based access |
+| 👥 User Management   | Handle students, teachers, and graduates   |
+| 📚 Class Management  | Organize and manage school classes         |
+| 🔍 Advanced Search   | Find users by various criteria             |
+| 📊 Data Organization | Sort and manage data efficiently           |
 
 ## 🏗 Project Structure
 
