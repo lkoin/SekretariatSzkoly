@@ -2,12 +2,10 @@ package pl.gornik.persons;
 
 import pl.gornik.exceptions.InvalidDataException;
 
-import java.sql.SQLOutput;
-
 public class Worker extends Person {
-    private String position;
-    private String subjectTaught;
-    private boolean hasManagementAccess;
+    private final String position;
+    private final String subjectTaught;
+    private final boolean hasManagementAccess;
 
     public Worker(String login, String password, String firstName, String lastName, String pesel, String birthDate, String phoneNumber, String address,
                   String position, String subjectTaught, boolean hasManagementAccess) {
@@ -29,28 +27,9 @@ public class Worker extends Person {
         System.out.println("---------------------------");
     }
 
-    public String getPosition() {
-        return position;
-    }
-
-    public void setPosition(String position) {
-        this.position = position;
-    }
-
-    public String getSubjectTaught() {
-        return subjectTaught;
-    }
-
-    public void setSubjectTaught(String subjectTaught) {
-        this.subjectTaught = subjectTaught;
-    }
 
     public boolean isHasManagementAccess() {
         return hasManagementAccess;
-    }
-
-    public void setHasManagementAccess(boolean hasManagementAccess) {
-        this.hasManagementAccess = hasManagementAccess;
     }
 
 

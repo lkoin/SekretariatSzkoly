@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Student extends Person {
-    private SchoolClass schoolClass; // Zmieniamy typ z String na SchoolClass
-    private List<String> advancedSubjects;
-    private List<String> parents;
+    private SchoolClass schoolClass;
+    private final List<String> advancedSubjects;
+    private final List<String> parents;
 
     public Student(String login, String password, String firstName, String lastName, String pesel, String birthDate, String phoneNumber, String address,
                    SchoolClass schoolClass, List<String> advancedSubjects, List<String> parents) {
@@ -27,10 +27,6 @@ public class Student extends Person {
         System.out.println("Rozszerzenia: " + String.join(", ", advancedSubjects));
         System.out.println("Rodzice: " + String.join(", ", parents));
         System.out.println("---------------------------");
-    }
-
-    public SchoolClass getSchoolClass() {
-        return schoolClass;
     }
 
     public void setSchoolClass(SchoolClass schoolClass) {

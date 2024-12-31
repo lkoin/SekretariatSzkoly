@@ -1,16 +1,19 @@
 package pl.gornik.controller;
+
 import pl.gornik.exceptions.AddingToSchoolClassException;
 import pl.gornik.exceptions.InvalidDataException;
 import pl.gornik.persons.*;
 
-import java.sql.SQLOutput;
-import java.util.*;
+import java.util.Comparator;
+import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Scanner;
 
 public class ViewController {
 
-        private List<Person> persons;
-        private List<SchoolClass> schoolClasses;
-        private List<Graduate> graduates;
+        private final List<Person> persons;
+        private final List<SchoolClass> schoolClasses;
+        private final List<Graduate> graduates;
 
     public ViewController(List<Person> persons, List<SchoolClass> schoolClasses, List<Graduate> graduates) {
         this.persons = persons;
@@ -26,27 +29,32 @@ public class ViewController {
             System.out.println("1. Zaloguj się");
             System.out.println("2. Wyjście");
             System.out.print("Wybierz opcję: ");
-            int choice = 0;
+
+            int choice;
+
             try {
-                choice = scanner.nextInt();
-            } catch (InputMismatchException e) {
-                System.err.println(e.getMessage());
-            }
-            scanner.nextLine();
+                if (scanner.hasNextInt()) {
+                    choice = scanner.nextInt();
+                    scanner.nextLine();
 
-            switch (choice) {
-
-                    case 1 -> login(scanner);
-                    case 2 -> {
-                        System.out.println("Do widzenia!");
-                        return;
+                    switch (choice) {
+                        case 1 -> login(scanner);
+                        case 2 -> {
+                            System.out.println("Do widzenia!");
+                            return;
+                        }
+                        default -> System.out.println("Nieprawidłowy wybór. Wybierz opcję 1 lub 2.");
                     }
-                    default -> System.out.println("Nieprawidłowy wybór. Spróbuj ponownie.");
+                } else {
+                    System.out.println("Błąd: Wprowadź liczbę (1 lub 2).");
+                    scanner.nextLine();
                 }
-
+            } catch (Exception e) {
+                System.out.println("Wystąpił nieoczekiwany błąd. Spróbuj ponownie.");
+                scanner.nextLine();
+            }
         }
     }
-
     private void login(Scanner scanner) {
         System.out.print("Login: ");
         String login = scanner.nextLine();
@@ -186,8 +194,9 @@ public class ViewController {
     }
 
     private void addNewPerson(Scanner scanner) {
+        System.out.println("\nDodawanie nowej osoby:");
         try {
-            System.out.println("\nDodawanie nowej osoby:");
+
             System.out.print("Podaj imię: ");
             String firstName = scanner.nextLine();
             System.out.print("Podaj nazwisko: ");
@@ -219,6 +228,7 @@ public class ViewController {
                 persons.add(new Worker(login, password, firstName, lastName, pesel, birthDate, phoneNumber, address, position, subject, hasManagementAccess));
                 System.out.println("Dodano nauczyciela.");
             } else if (type.equals("U")) {
+
                 System.out.print("Podaj klasę: ");
                 String className = scanner.nextLine();
                 SchoolClass studentClass = findClassByName(className);
@@ -228,29 +238,31 @@ public class ViewController {
                     studentClass = new SchoolClass(className);
                     schoolClasses.add(studentClass);
                 }
-                System.out.println("Podaj rozszerzenia (wpisz po przecinku): ");
+
+                System.out.print("Podaj rozszerzenia (wpisz po przecinku): ");
                 String[] subjects = scanner.nextLine().split(",");
                 List<String> advancedSubjects = List.of(subjects);
 
-                System.out.println("Podaj rodziców (wpisz po przecinku): ");
+                System.out.print("Podaj rodziców (wpisz po przecinku): ");
                 String[] parentsArray = scanner.nextLine().split(",");
                 List<String> parents = List.of(parentsArray);
 
-                Student newStudent = new Student(login, password, firstName, lastName, pesel,
-                        birthDate, phoneNumber, address, studentClass, advancedSubjects, parents);
-
+                Student newStudent = new Student(login, password, firstName, lastName, pesel, birthDate, phoneNumber, address, studentClass, advancedSubjects, parents);
                 persons.add(newStudent);
-                try {
-                    studentClass.addStudent(newStudent);
-                    System.out.println("Dodano ucznia i przypisano do klasy " + className);
-                } catch (AddingToSchoolClassException e) {
-                    System.err.println("Błąd podczas przypisywania do klasy: " + e.getMessage());
-                }
+                studentClass.addStudent(newStudent);
+                System.out.println("Dodano ucznia i przypisano do klasy " + className);
+            } else {
+                System.out.println("Nieznany typ osoby. Użyj 'N' dla nauczyciela lub 'U' dla ucznia.");
             }
-             } catch (InvalidDataException e) {
-            System.out.println("Błąd: " + e.getMessage());
-            }
+        } catch (InvalidDataException e) {
+            System.err.println("Błąd: " + e.getMessage());
+        } catch (AddingToSchoolClassException e) {
+            System.err.println("Błąd podczas przypisywania do klasy: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Wystąpił nieoczekiwany błąd: " + e.getMessage());
+        }
     }
+
 
     public void assignStudentToClass(Scanner scanner) {
         System.out.println("Przypisywanie ucznia do klasy:");

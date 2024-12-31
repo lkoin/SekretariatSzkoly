@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class SchoolClass {
-    private String name;
+    private final String
+            name;
 
-    private List<Student> students;
-    private List<Worker> teachers;
+    private final List<Student> students;
+    private final List<Worker> teachers;
 
     public SchoolClass(String name) {
-        this.name = name.toUpperCase();  // Przechowywanie nazw klas w formie z dużymi literami
-
+        this.name = name.toUpperCase();
         this.students = new ArrayList<>();
         this.teachers = new ArrayList<>();
     }
@@ -23,20 +23,9 @@ public class SchoolClass {
         }
         if (!students.contains(student)) {
             students.add(student);
-            student.setSchoolClass(this);  // Powiązanie ucznia z klasą
+            student.setSchoolClass(this);
         } else {
             throw new AddingToSchoolClassException("Uczeń już jest przypisany do tej klasy");
-        }
-    }
-
-    public void addTeacher(Worker teacher) throws AddingToSchoolClassException {
-        if (teacher == null) {
-            throw new AddingToSchoolClassException("Nauczyciel nie może być null");
-        }
-        if (!teachers.contains(teacher)) {
-            teachers.add(teacher);
-        } else {
-            throw new AddingToSchoolClassException("Nauczyciel już jest przypisany do tej klasy");
         }
     }
 
