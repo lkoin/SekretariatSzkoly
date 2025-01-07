@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class SchoolClass {
-    private final String
+    private  String
             name;
 
-    private final List<Student> students;
-    private final List<Worker> teachers;
+    private  List<Student> students;
+    private  List<Worker> teachers;
 
     public SchoolClass(String name) {
         this.name = name.toUpperCase();
@@ -29,6 +29,15 @@ public class SchoolClass {
         }
     }
 
+    public void addTeacher(Worker teacher) throws AddingToSchoolClassException {
+        if (teacher != null && !teachers.contains(teacher)) {
+            teachers.add(teacher);
+        } else if (teacher == null) {
+            throw new AddingToSchoolClassException("Nauczyciel nie może być null");
+        }
+    }
+
+
     public String getName() {
         return name;
     }
@@ -42,4 +51,9 @@ public class SchoolClass {
     public List<Worker> getTeachers() {
         return teachers;
     }
+
+    public void setTeachers(List<Worker> teachers) {
+        this.teachers = teachers;
+    }
 }
+

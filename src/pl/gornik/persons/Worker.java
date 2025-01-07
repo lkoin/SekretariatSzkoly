@@ -32,5 +32,11 @@ public class Worker extends Person {
         return hasManagementAccess;
     }
 
+    public String getPosition() {
+        return position;
+    }
 
+    public String getSubjectTaught() {
+        return subjectTaught;
+    }
 }

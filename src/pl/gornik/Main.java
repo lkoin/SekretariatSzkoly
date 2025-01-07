@@ -3,6 +3,7 @@ package pl.gornik;
 import pl.gornik.controller.ViewController;
 import pl.gornik.persons.Graduate;
 import pl.gornik.persons.Person;
+import pl.gornik.persons.PersonsInitialize;
 import pl.gornik.persons.SchoolClass;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class Main {
 
         initializeClasses(schoolClasses);
         initializeTeachers(persons);
+        PersonsInitialize.assignTeachersToClasses(persons, schoolClasses);
         initializeStudents(persons, schoolClasses);
         initializeGraduates(graduates);
 

@@ -171,6 +171,31 @@ public class PersonsInitialize {
             persons.add(worker);
         } catch (InvalidDataException e) {
             System.err.println("Błąd przy dodawaniu nauczyciela: " + e.getMessage());
+
+
         }
     }
+    public static void assignTeachersToClasses(List<Person> persons, List<SchoolClass> schoolClasses) {
+        for (Person person : persons) {
+            if (person instanceof Worker worker && "Nauczyciel".equals(worker.getPosition())) {
+                try {
+                    switch (worker.getSubjectTaught()) {
+                        case "Fizyka" -> {
+                            schoolClasses.get(0).addTeacher(worker); // Assign to 1A
+                            schoolClasses.get(1).addTeacher(worker); // Assign to 1B
+                        }
+                        case "Polski" -> schoolClasses.get(2).addTeacher(worker); // Assign to 1C
+                        case "Geografia" -> schoolClasses.get(3).addTeacher(worker); // Assign to 2A
+                        case "Chemia" -> schoolClasses.get(4).addTeacher(worker); // Assign to 2B
+                        default -> System.err.println("Nieobsługiwany przedmiot: " + worker.getSubjectTaught());
+                    }
+                } catch (AddingToSchoolClassException e) {
+                    System.err.println("Błąd przy przypisywaniu nauczyciela do klasy: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+
+
 }
